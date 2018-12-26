@@ -55,8 +55,8 @@ function PromptChoice() {
             connection.query(
                 "INSERT INTO products SET ?",
                 {
-                    item_id: itemID,
-                    stock_quantity: currentQuantity - buyQuantity
+                    item_id: answer.itemID,
+                    stock_quantity: currentQuantity - answer.buyQuantity
                 },
                 function (err) {
                     if (err) throw err;
