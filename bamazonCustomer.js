@@ -39,7 +39,7 @@ function PromptChoice() {
                 }
             },
             {
-                name: "quantity",
+                name: "buyQuantity",
                 type: "input",
                 message: "How many would you like to buy?",
                 validate: function (value) {
@@ -50,13 +50,19 @@ function PromptChoice() {
                 }
             }
         ])
-        .then(function(answer){
+        .then(function (answer) {
+            var currentQuantity = "SELECT stock_quantity FROM products WHERE itemid = itemID";
             connection.query(
                 "INSERT INTO products SET ?",
                 {
-                    item_id: answer.itemID,
-                    stock_quantity: answer.quantity
+                    item_id: itemID,
+                    stock_quantity: currentQuantity - buyQuantity
                 },
-            )
-        })
+                function (err) {
+                    if (err) throw err;
+                    console.log("Your Purchase is complete!");
+                   displayAll();
+                }
+            );
+        });
 }
