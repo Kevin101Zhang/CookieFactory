@@ -51,23 +51,28 @@ function PromptChoice() {
             }
         ])
         .then(function (answer) {
-            var currentQuantity = "SELECT stock_quantity FROM products WHERE itemid = itemID";
-            if (currentQuantity - answer.buyQuantity < 0) {
-                console.log("Sorry CookieFactory does not have enough Stock")
-            } else {
-                connection.query(
-                    "INSERT INTO products SET ?",
-                    {
-                        item_id: answer.itemID,
-                        stock_quantity: currentQuantity - answer.buyQuantity
-                    },
-                    function (err) {
-                        if (err) throw err;
-                        console.log("Your Purchase is complete!");
-                        displayAll();
-                    }
-                );
-            }
+            // var currentQuantity = "SELECT stock_quantity FROM products WHERE itemid = itemID";
+            connection.query("SELECT * FROM products WHERE itemid =" + itemID, function (err, res) {
+                if (err) throw err;
+                var currentQuantity = res.stock_quantity;
+
+                if (currentQuantity - answer.buyQuantity < 0) {
+                    console.log("Sorry CookieFactory does not have enough Stock")
+                } else {
+                    connection.query(
+                        "INSERT INTO products SET ?",
+                        {
+                            item_id: answer.itemID,
+                            stock_quantity: currentQuantity - answer.buyQuantity
+                        },
+                        function (err) {
+                            if (err) throw err;
+                            console.log("Your Purchase is complete!");
+                            displayAll();
+                        }
+                    );
+                }
+            });
         });
 
 }
