@@ -1,11 +1,12 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
+var Password = require("password.js");
 
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "root",
-    password: "Pokezhang101",
+    password: Password.PASSWORD,
     database: "bamazon"
 })
 
