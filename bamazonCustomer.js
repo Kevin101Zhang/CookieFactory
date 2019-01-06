@@ -20,12 +20,13 @@ function displayAll() {
     connection.query("SELECT * FROM products", function (err, res) {
         if (err) throw err;
         console.log(res);
-        connection.end();
+        // connection.end();
     });
     PromptChoice();
 }
 
 function PromptChoice() {
+    console.log("Starting Buying Process...\n");
     inquirer
         .prompt([
             {
@@ -52,28 +53,30 @@ function PromptChoice() {
             }
         ])
         .then(function (answer) {
-            // var currentQuantity = "SELECT stock_quantity FROM products WHERE itemid = itemID";
-            connection.query("SELECT * FROM products WHERE itemid =" + itemID, function (err, res) {
-                if (err) throw err;
-                var currentQuantity = res.stock_quantity;
+            console.log("Confirming Item ID: " + answer.itemID);
+            console.log("Confirming Buy Quantity: " + answer.buyQuantity);
 
-                if (currentQuantity - answer.buyQuantity < 0) {
-                    console.log("Sorry CookieFactory does not have enough Stock")
-                } else {
-                    connection.query(
-                        "INSERT INTO products SET ?",
-                        {
-                            item_id: answer.itemID,
-                            stock_quantity: currentQuantity - answer.buyQuantity
-                        },
-                        function (err) {
-                            if (err) throw err;
-                            console.log("Your Purchase is complete!");
-                            displayAll();
-                        }
-                    );
+            connection.query("SELECT * FROM products WHERE item_id=" + answer.itemID, function (err, res) {
+                if (err) throw err;
+
+                for (var i = 0; i < res.length; i++) {
+                    console.log(`You're buying ${answer.buyQuantity} stocks of ${res[i].product_name} from ${res[i].department_name}`);
+
+                    var currentQuantity = res[i].stock_quantity;
+
+                    if (currentQuantity - answer.buyQuantity < 0) {
+                        console.log("Sadly, CookieFactory does not have enough Stock")
+                    } else {
+                        console.log("Now Processing Purchase...\n");
+                        connection.query(
+                            "UPDATE products SET stock_quantity =" + (currentQuantity - answer.buyQuantity) + " WHERE item_id =" + answer.itemID, function (err, res) {
+                                if (err) throw err;
+                                console.log("Your Purchase is complete!");
+                                displayAll();
+                            }
+                        );
+                    }
                 }
             });
         });
-
 }
