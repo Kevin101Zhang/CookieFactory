@@ -23,3 +23,10 @@ VALUES
 (8, 'Snickerdoodle', 'Insomnia Cookies', 6, 150),
 (9, 'Almond Biscuits', 'Chips Ahoy!' , 4, 250),
 (10, 'Macaroons', 'The Cookie Factory', 5,175);
+
+create table departments (
+department_id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+department_name varchar(50) not null,
+over_head_costs INTEGER(10) not null,
+ PRIMARY KEY (department_id),
+)
